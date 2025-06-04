@@ -20,7 +20,7 @@ public class StartActivity extends Activity {
     private EditText mET;
     private Button mBT;
 
-    private final int CODE_LENGTH = 0;
+    private final int CODE_LENGTH = 6;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
