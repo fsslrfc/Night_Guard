@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <Button
         android:id="@+id/btn_sos"
         android:layout_width="300dp"
         android:layout_height="300dp"
@@ -13,13 +13,73 @@
         android:padding="20dp"
         android:text="SOS"
         android:textColor="#FFFFFF"
-        android:textSize="80sp"
+        android:textSize="100sp"
         android:textStyle="bold"
+        android:visibility="visible"
         app:cornerRadius="8dp"
         app:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/FL_sos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AA0000"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="警报中!"
+                android:textColor="#FFFFFF"
+                android:textSize="80sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="输入密码以停止警报"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/et_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0123456789"
+                android:gravity="center"
+                android:inputType="numberPassword"
+                android:maxLength="6"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/bt_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="确认"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

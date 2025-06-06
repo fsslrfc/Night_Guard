@@ -1,5 +1,6 @@
 package com.example.nightguard;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_main);
         initTab();
-        initFragment();
+        initFragmentFactory();
         initAdapter();
     }
 
@@ -39,10 +40,31 @@ public class MainActivity extends FragmentActivity {
         mTL.addTab(mTL.newTab().setText("紧急联系人"));
     }
 
-    private void initFragment() {
-        mFragmentList.add(new MessageMainFragment());
-        mFragmentList.add(new CallMainFragment());
-        mFragmentList.add(new ContactMainFragment());
+    private String initIntent() {
+        Intent intent = getIntent();
+        return intent.getStringExtra("pwd");
+    }
+
+    private void initFragmentFactory() {
+        mFragmentList.add(initFragment("message"));
+        mFragmentList.add(initFragment("call"));
+        mFragmentList.add(initFragment("contact"));
+    }
+
+    private Fragment initFragment(String message) {
+        switch (message){
+            case "message":
+                return new MessageMainFragment();
+            case "call":
+                Fragment callFragment = new CallMainFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("pwd", initIntent());
+                callFragment.setArguments(bundle);
+                return  callFragment;
+            case "contact":
+                return new ContactMainFragment();
+        }
+        return null;
     }
 
     private void initAdapter() {
