@@ -22,30 +22,31 @@ public class StartActivity extends Activity {
 
     private final int CODE_LENGTH = 6;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            setContentView(R.layout.layout_start);
+            initView();
+            initListener();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setContentView(R.layout.layout_start);
+                initView();
+                initListener();
             } else {
-                Toast.makeText(this, "请授予定位权限!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "请授予定位权限后重新打开!", Toast.LENGTH_LONG).show();
+                finish();
             }
-        }
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "请授予定位权限!", Toast.LENGTH_LONG).show();
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, 1);
-        } else {
-            setContentView(R.layout.layout_start);
-            initView();
-            initListener();
         }
     }
 
@@ -68,6 +69,5 @@ public class StartActivity extends Activity {
             }
         });
     }
-
 
 }
