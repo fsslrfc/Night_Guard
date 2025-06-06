@@ -43,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="保存修改"
+            android:background="#22000000"
             android:layout_marginTop="24dp" />
 
         <Button
@@ -59,6 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="拨打电话"
+            android:background="#22000000"
             android:layout_marginTop="12dp" />
     </LinearLayout>
 </ScrollView>
