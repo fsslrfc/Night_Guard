@@ -186,7 +186,8 @@ public class SosService extends Service {
 
     private void startSound() {
         originalVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-//        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+        //如果开发时不希望音量调到最大,将下面一行注释掉
+        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
         if (mMP == null) {
             mMP = MediaPlayer.create(this, R.raw.sos_sound);
             mMP.setLooping(true);
