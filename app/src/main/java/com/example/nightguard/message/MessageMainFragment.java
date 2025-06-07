@@ -70,6 +70,8 @@ public class MessageMainFragment extends Fragment {
             FileInputStream fis = new FileInputStream(file);
             BufferedReader  br = new BufferedReader(new InputStreamReader(fis));
             mET.setText(br.readLine());
+            fis.close();
+            br.close();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), "紧急信息已重置!", Toast.LENGTH_SHORT).show();
@@ -93,6 +95,7 @@ public class MessageMainFragment extends Fragment {
             FileOutputStream fos = new FileOutputStream(file);
             fos.write((info + "\n").getBytes());
             Toast.makeText(getActivity(), "信息已保存", Toast.LENGTH_SHORT).show();
+            fos.close();
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), "保存信息失败", Toast.LENGTH_SHORT).show();

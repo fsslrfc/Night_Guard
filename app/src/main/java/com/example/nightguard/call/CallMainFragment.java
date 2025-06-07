@@ -17,7 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.nightguard.R;
-import com.example.nightguard.service.SosService;
 
 public class CallMainFragment extends Fragment {
     private FrameLayout mFL_sos;

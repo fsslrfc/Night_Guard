@@ -1,4 +1,4 @@
-package com.example.nightguard.service;
+package com.example.nightguard.call;
 
 import android.app.Service;
 import android.content.Intent;
@@ -8,18 +8,27 @@ import android.location.Location;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
+import android.telephony.SmsManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.nightguard.R;
+import com.example.nightguard.contact.Contact;
+import com.example.nightguard.contact.DBHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -34,22 +43,26 @@ public class SosService extends Service {
     private AudioManager mAM;
     private MediaPlayer mMP;
     private int originalVolume;
+    private SmsManager mSM;
+    private DBHelper mDB;
+    private List<Contact> mCL;
+    private String mMessage;
 
     @Override
     public void onCreate() {
         super.onCreate();
         init();
+        getMessage();
         startFlash();
-        startLocation();
+        startMessage();
         startSound();
-        sendMessage();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         stopFlash();
-        stopLocation();
+        stopMessage();
         stopSound();
     }
 
@@ -62,7 +75,32 @@ public class SosService extends Service {
     private void init() {
         mClient = LocationServices.getFusedLocationProviderClient(this);
         mAM = (AudioManager) getSystemService(AUDIO_SERVICE);
+        mSM = SmsManager.getDefault();
+        mDB = new DBHelper(this);
+        mCL = mDB.getAllContacts();
+        for (Contact contact : mCL) {
+            Log.d("SosService", "mCL: " + contact.getPhone());
+        }
     }
+
+    private void getMessage() {
+        File fileDir = getBaseContext().getFilesDir();
+        try {
+            File file = new File(fileDir, "message.txt");
+            if (!file.exists()) {
+                mMessage = "";
+                return;
+            }
+            FileInputStream fis = new FileInputStream(file);
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            mMessage = br.readLine();
+            fis.close();
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void startFlash() {
         cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
@@ -107,7 +145,8 @@ public class SosService extends Service {
         }
     }
 
-    private void startLocation() {
+    private void startMessage() {
+        Log.d("SosService", "开始发送信息");
         LocationRequest locationRequest = LocationRequest.create()
                 .setInterval(5000)
                 .setFastestInterval(2000)
@@ -118,11 +157,13 @@ public class SosService extends Service {
             public void onLocationResult(@NonNull LocationResult locationResult) {
                 if (locationResult.getLastLocation() != null) {
                     Location location = locationResult.getLastLocation();
-                    LocationInfo = "精度:" + location.getLongitude()
+                    LocationInfo
+                            = "\n精度:" + location.getLongitude()
                             + "\n纬度:" + location.getLatitude()
                             + "\n高度:" + location.getAltitude()
                             + "\n速度:" + location.getSpeed();
                     Log.d("SosService", "当前位置: " + LocationInfo);
+                    sendMessage();
                 }
             }
         };
@@ -134,7 +175,7 @@ public class SosService extends Service {
         }
     }
 
-    private void stopLocation() {
+    private void stopMessage() {
         if (mClient != null) {
             mClient.removeLocationUpdates(mLocationCallback);
         }
@@ -142,19 +183,18 @@ public class SosService extends Service {
 
     private void startSound() {
         originalVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
-        if(mMP == null){
+//        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+        if (mMP == null) {
             mMP = MediaPlayer.create(this, R.raw.sos_sound);
             mMP.setLooping(true);
             mMP.start();
-        }
-        else{
+        } else {
             Log.e("SosService", "媒体播放器初始化失败!");
         }
     }
 
     private void stopSound() {
-        if(mMP != null){
+        if (mMP != null) {
             mMP.stop();
             mMP.release();
             mMP = null;
@@ -164,7 +204,27 @@ public class SosService extends Service {
     }
 
     private void sendMessage() {
-        //TODO
+        Log.d("SosService", "开始发送短信");
+        try {
+            for (Contact contact : mCL) {
+                mSM.sendMultipartTextMessage(
+                        "+86" + contact.getPhone(),
+                        null,
+                        mSM.divideMessage(
+                                mMessage
+                                        + "\n"
+                                        + "\n以下是我此刻的定位信息:"
+                                        + LocationInfo),
+                        null,
+                        null);
+                Log.d("SosService", "已发送短信给" + contact.getName());
+
+            }
+
+
+        } catch (Exception e) {
+            Log.e("SosService", "发送短信失败", e);
+        }
 
 
     }
