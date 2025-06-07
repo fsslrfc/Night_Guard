@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,6 +48,7 @@ public class SosService extends Service {
     private DBHelper mDB;
     private List<Contact> mCL;
     private String mMessage;
+    private Boolean flag;
 
     @Override
     public void onCreate() {
@@ -73,6 +75,7 @@ public class SosService extends Service {
     }
 
     private void init() {
+        flag = false;
         mClient = LocationServices.getFusedLocationProviderClient(this);
         mAM = (AudioManager) getSystemService(AUDIO_SERVICE);
         mSM = SmsManager.getDefault();
@@ -218,10 +221,11 @@ public class SosService extends Service {
                         null,
                         null);
                 Log.d("SosService", "已发送短信给" + contact.getName());
-
+                flag  = true;
             }
-
-
+            if (flag) {
+                Toast.makeText(this, "已发送SOS信息!", Toast.LENGTH_LONG).show();
+            }
         } catch (Exception e) {
             Log.e("SosService", "发送短信失败", e);
         }

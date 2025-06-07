@@ -5,31 +5,61 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_board_rectangle">
 
-    <Button
-        android:id="@+id/btn_sos"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:background="@drawable/button_sos"
+    <FrameLayout
+        android:id="@+id/FL_sos1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="20dp"
-        android:text="SOS"
-        android:textColor="#FFFFFF"
-        android:textSize="100sp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:cornerRadius="8dp"
-        app:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="使用前请至少出现一次测试通过!"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"/>
+
+        <Button
+            android:id="@+id/btn_sos"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:background="@drawable/button_sos"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:padding="20dp"
+            android:text="SOS"
+            android:textColor="#FFFFFF"
+            android:textSize="100sp"
+            android:textStyle="bold"
+            app:cornerRadius="8dp"
+            app:elevation="4dp" />
+
+        <Button
+            android:id="@+id/btn_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F44336"
+            android:padding="20dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="100dp"
+            android:text="发送测试短信"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
 
     <FrameLayout
-        android:id="@+id/FL_sos"
+        android:id="@+id/FL_sos2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#AA0000"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

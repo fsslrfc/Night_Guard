@@ -33,6 +33,10 @@ public class StartActivity extends Activity {
             initView();
             initListener();
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, 2);
+        }
     }
 
     @Override
@@ -45,6 +49,12 @@ public class StartActivity extends Activity {
                 initListener();
             } else {
                 Toast.makeText(this, "请授予定位权限后重新打开!", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        else if (requestCode == 2) {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Toast.makeText(this, "请授予发送短信权限!", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
