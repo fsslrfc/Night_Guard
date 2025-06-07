@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.location.Location;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.nightguard.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -28,15 +31,18 @@ public class SosService extends Service {
     private String LocationInfo;
     private LocationCallback mLocationCallback;
     private FusedLocationProviderClient mClient;
+    private AudioManager mAM;
+    private MediaPlayer mMP;
+    private int originalVolume;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initLocation();
+        init();
         startFlash();
         startLocation();
         startSound();
-        startMessage();
+        sendMessage();
     }
 
     @Override
@@ -44,6 +50,7 @@ public class SosService extends Service {
         super.onDestroy();
         stopFlash();
         stopLocation();
+        stopSound();
     }
 
     @Nullable
@@ -52,8 +59,9 @@ public class SosService extends Service {
         return null;
     }
 
-    private void initLocation() {
+    private void init() {
         mClient = LocationServices.getFusedLocationProviderClient(this);
+        mAM = (AudioManager) getSystemService(AUDIO_SERVICE);
     }
 
     private void startFlash() {
@@ -83,8 +91,23 @@ public class SosService extends Service {
 
     }
 
+    private void stopFlash() {
+        if (flashTimer != null) {
+            flashTimer.cancel();
+            flashTimer = null;
+        }
+
+        if (cameraManager != null && cameraId != null) {
+            try {
+                cameraManager.setTorchMode(cameraId, false);
+                isTorchOn = false;
+            } catch (CameraAccessException e) {
+                Log.e("SosService", "无法关闭闪光灯", e);
+            }
+        }
+    }
+
     private void startLocation() {
-        //TODO
         LocationRequest locationRequest = LocationRequest.create()
                 .setInterval(5000)
                 .setFastestInterval(2000)
@@ -111,22 +134,6 @@ public class SosService extends Service {
         }
     }
 
-    private void stopFlash() {
-        if (flashTimer != null) {
-            flashTimer.cancel();
-            flashTimer = null;
-        }
-
-        if (cameraManager != null && cameraId != null) {
-            try {
-                cameraManager.setTorchMode(cameraId, false);
-                isTorchOn = false;
-            } catch (CameraAccessException e) {
-                Log.e("SosService", "无法关闭闪光灯", e);
-            }
-        }
-    }
-
     private void stopLocation() {
         if (mClient != null) {
             mClient.removeLocationUpdates(mLocationCallback);
@@ -134,10 +141,29 @@ public class SosService extends Service {
     }
 
     private void startSound() {
-        //TODO
+        originalVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+        if(mMP == null){
+            mMP = MediaPlayer.create(this, R.raw.sos_sound);
+            mMP.setLooping(true);
+            mMP.start();
+        }
+        else{
+            Log.e("SosService", "媒体播放器初始化失败!");
+        }
     }
 
-    private void startMessage() {
+    private void stopSound() {
+        if(mMP != null){
+            mMP.stop();
+            mMP.release();
+            mMP = null;
+        }
+
+        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
+    }
+
+    private void sendMessage() {
         //TODO
 
 
