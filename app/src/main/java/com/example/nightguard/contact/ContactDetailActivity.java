@@ -1,6 +1,7 @@
 package com.example.nightguard.contact;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -25,6 +26,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         dbHelper = new DBHelper(this);
         contactId = getIntent().getIntExtra("contact_id", -1);
         setContentView(R.layout.activity_contact_detail);

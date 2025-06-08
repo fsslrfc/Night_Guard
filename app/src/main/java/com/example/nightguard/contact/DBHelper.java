@@ -35,7 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(createTable);
     }
 
-    // 升级数据库（目前无用）
+    // 升级数据库
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String dropTable = "DROP TABLE IF EXISTS " + TABLE_NAME;

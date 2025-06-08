@@ -114,6 +114,8 @@ public class SosService extends Service {
             flashTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
+                    //如果开发时不希望音量保持最大,将下面一行注释掉
+                    mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
                     try {
                         isTorchOn = !isTorchOn;
                         cameraManager.setTorchMode(cameraId, isTorchOn);
@@ -129,7 +131,6 @@ public class SosService extends Service {
         } catch (CameraAccessException e) {
             Log.e("SosService", "相机访问异常", e);
         }
-
     }
 
     private void stopFlash() {
@@ -186,8 +187,6 @@ public class SosService extends Service {
 
     private void startSound() {
         originalVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-        //如果开发时不希望音量调到最大,将下面一行注释掉
-        mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
         if (mMP == null) {
             mMP = MediaPlayer.create(this, R.raw.sos_sound);
             mMP.setLooping(true);
@@ -203,7 +202,6 @@ public class SosService extends Service {
             mMP.release();
             mMP = null;
         }
-
         mAM.setStreamVolume(AudioManager.STREAM_MUSIC, originalVolume, 0);
     }
 
@@ -230,8 +228,6 @@ public class SosService extends Service {
         } catch (Exception e) {
             Log.e("SosService", "发送短信失败", e);
         }
-
-
     }
 
 }
