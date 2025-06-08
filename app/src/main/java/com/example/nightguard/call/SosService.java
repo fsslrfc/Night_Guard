@@ -53,10 +53,15 @@ public class SosService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.d("SosService", "调试:开始init");
         init();
+        Log.d("SosService", "调试:结束init,开始getMessage");
         getMessage();
+        Log.d("SosService", "调试:结束getMessage,开始startFlash");
         startFlash();
+        Log.d("SosService", "调试:结束startFlash,开始startMessage");
         startMessage();
+        Log.d("SosService", "调试:结束startMessage,开始startSound");
         startSound();
     }
 
@@ -155,6 +160,7 @@ public class SosService extends Service {
                 .setInterval(5000)
                 .setFastestInterval(2000)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        Log.d("SosService", "开始请求位置信息");
 
         mLocationCallback = new LocationCallback() {
             @Override
