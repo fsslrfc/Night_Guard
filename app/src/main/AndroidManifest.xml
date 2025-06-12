@@ -30,6 +30,7 @@
         android:theme="@style/Theme.NightGuard"
         tools:targetApi="31">
         <activity
+            android:excludeFromRecents="true"
             android:name=".StartActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -42,6 +43,7 @@
         </activity>
 
         <activity
+            android:excludeFromRecents="true"
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -51,6 +53,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:excludeFromRecents="true"
             android:name=".contact.ContactDetailActivity"
             android:exported="true"
             android:screenOrientation="portrait"/>
